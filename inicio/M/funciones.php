@@ -201,7 +201,7 @@ function get_terceros_por_zona($idzona){
   LEFT JOIN tercero_codigo tc ON t.idtercero=tc.idtercero
   LEFT JOIN tercero_zonas tz ON t.idtercero=tz.idtercero
   LEFT JOIN zonas z ON tz.idzona=z.idzona
-  WHERE tc.status AND tz.status AND tz.idzona = $idzona AND t.idtipo_tercero = 5";
+  WHERE tz.status AND tz.idzona = $idzona AND t.idtipo_tercero = 5";
   $result = $mysqli->query($sql);
   if($mysqli->affected_rows > 0 ){
     while($row = $result->fetch_array(MYSQLI_ASSOC)){
@@ -221,7 +221,7 @@ function get_terceros_por_distrito($idempresa){
   LEFT JOIN tercero_codigo tc ON t.idtercero=tc.idtercero
   LEFT JOIN tercero_zonas tz ON t.idtercero=tz.idtercero
   LEFT JOIN zonas z ON tz.idzona=z.idzona
-  WHERE tc.status AND tz.status AND z.idempresa = $idempresa AND t.idtipo_tercero = 5";
+  WHERE tz.status AND z.idempresa = $idempresa AND t.idtipo_tercero = 5";
   $result = $mysqli->query($sql);
   if($mysqli->affected_rows > 0 ){
     while($row = $result->fetch_array(MYSQLI_ASSOC)){
@@ -297,6 +297,46 @@ function get_nombre_iglesias_por_distrito($iddistrito){
   }
 
   $return = (count($array) > 0) ? $array : '';
+  off_bd($mysqli);
+  return $return;
+}
+
+function get_iglesias_por_zona($idzona){
+  $mysqli = on_bd();
+  $array = array();
+  $sql = "SELECT t.idtercero, t.cedula, t.razon_social, t.apellidos, t.correo, t.telefono, tc.codigo
+  FROM tercero t
+  LEFT JOIN tercero_zonas tz ON t.idtercero=tz.idtercero
+  LEFT JOIN zonas z ON tz.idzona=z.idzona
+  LEFT JOIN tercero_codigo tc ON tc.idtercero = t.idtercero
+  WHERE tz.status AND tz.idzona = $idzona AND t.idtipo_tercero = 6";
+  $result = $mysqli->query($sql);
+  if($mysqli->affected_rows > 0 ){
+    while($row = $result->fetch_array(MYSQLI_ASSOC)){
+        array_push($array,$row);
+    }
+  }
+  $return = (count($array) > 0) ? $array : 0;
+  off_bd($mysqli);
+  return $return;
+}
+
+function get_iglesia_por_distrito($idempresa){
+  $mysqli = on_bd();
+  $array = array();
+  $sql = "SELECT t.idtercero, tc.codigo, t.cedula, t.razon_social, t.apellidos, t.correo, t.telefono, z.zona
+  FROM tercero t
+  LEFT JOIN tercero_codigo tc ON t.idtercero=tc.idtercero
+  LEFT JOIN tercero_zonas tz ON t.idtercero=tz.idtercero
+  LEFT JOIN zonas z ON tz.idzona=z.idzona
+  WHERE tz.status AND z.idempresa = $idempresa AND t.idtipo_tercero = 6";
+  $result = $mysqli->query($sql);
+  if($mysqli->affected_rows > 0 ){
+    while($row = $result->fetch_array(MYSQLI_ASSOC)){
+        array_push($array,$row);
+    }
+  }
+  $return = (count($array) > 0) ? $array : 0;
   off_bd($mysqli);
   return $return;
 }

@@ -44,7 +44,7 @@ foreach ($terceros as $row) {
 <html lang="en">
 
 <head>
-    <title>SISAD | Registrar Ministro</title>
+    <title>SISAD | Ministros</title>
     <?php include_once('M/head.php') ?>
     <style>
         .btn-circle {
@@ -98,7 +98,7 @@ foreach ($terceros as $row) {
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h3 class="text-themecolor">Editar Ministro</h3>
+                        <h3 class="text-themecolor">Listado de Ministros</h3>
                     </div>
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
@@ -121,7 +121,7 @@ foreach ($terceros as $row) {
 
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Ministros e Iglesias</h4>
+                        <h4 class="card-title">Ministros</h4>
                         <h6 class="card-subtitle">Solo se muestran los terceros de su
                             <?php
                             if ($sesion['distrital']) {

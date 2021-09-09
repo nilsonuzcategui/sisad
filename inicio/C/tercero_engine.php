@@ -9,7 +9,7 @@ $array = array(
 
 $opt = (isset($_POST['opt'])) ? limpiar($_POST['opt']) : '';
 
-$idempresa_sesion = (isset($_SESSION['sisad']['distrital']) && $_SESSION['sisad']['distrital'] == 1) ? $_SESSION['sisad']['idobjeto'] : '' ;
+$idempresa_sesion = (isset($_SESSION['sisad']['distrital']) && $_SESSION['sisad']['distrital'] == 1) ? $_SESSION['sisad']['idobjeto'] : '';
 
 $tipo_cedula = (isset($_POST['tipo_cedula'])) ? limpiar($_POST['tipo_cedula']) : '';
 $cedula = (isset($_POST['cedula'])) ? limpiar($_POST['cedula']) : '';
@@ -50,8 +50,8 @@ $ocupacion = (isset($_POST['ocupacion'])) ? limpiar($_POST['ocupacion']) : '';
 $idestudio = (isset($_POST['idestudio'])) ? limpiar($_POST['idestudio']) : '';
 $idocupacion = (isset($_POST['idocupacion'])) ? limpiar($_POST['idocupacion']) : '';
 
-if($opt == 'add_ministro'){
-    $cedula_full = $tipo_cedula.$cedula;
+if ($opt == 'add_ministro') {
+    $cedula_full = $tipo_cedula . $cedula;
     //validar si el ministro existe
     $datos_aux = get_ministro_cedula($cedula_full);
     if ($datos_aux == 0) {
@@ -63,125 +63,131 @@ if($opt == 'add_ministro'){
         '$estado_civil', '$lugar_nacimiento', '$fecha_nacimiento', '$telefono', 
         '$fax', '$correo', '$web', '$direccion', '$descripcion');";
         $result = $mysqli->query($sql);
-        if($mysqli->affected_rows > 0 ){
-          $idtercero = $mysqli->insert_id;
-          //REGISTRAR MINISTRO EN UNA ZONA
-          $sql = "INSERT INTO `tercero_zonas` (`idzona`, `idtercero`) VALUES ($idzona, $idtercero);";
-          $result = $mysqli->query($sql);
-          if($mysqli->affected_rows > 0 ){
-            //REGISTRAR MINISTRO EN tercero_ministerial
-            $sql = "INSERT INTO `tercero_ministerial` (`idtercero`, `convercion`, `bautizmo_agua`, `bautizmo_ES`, 
-            `iglesia`, `pastor`, `ministerio`) 
-            VALUES ($idtercero, '$m_fecha_convercion', '$m_fecha_bautizmo_agua', '$m_fecha_bautizmo_es', 
-            '$m_iglesia', '$m_pastor', '$m_ministerio');";
+        if ($mysqli->affected_rows > 0) {
+            $idtercero = $mysqli->insert_id;
+            //REGISTRAR MINISTRO EN UNA ZONA
+            $sql = "INSERT INTO `tercero_zonas` (`idzona`, `idtercero`) VALUES ($idzona, $idtercero);";
             $result = $mysqli->query($sql);
-            if($mysqli->affected_rows > 0 ){
-                //REGISTRAR ESCALAFON
-                $sql = "INSERT INTO `tercero_escalafon` (`idtercero`, `idescalafon`, `fecha`, `status`) 
-                VALUES ($idtercero, $m_idescalafon, NOW(), '1');";
-                $result = $mysqli->query($sql);
-                if($mysqli->affected_rows > 0 ){
-                    //AGREGAR LOS ESTUDIOS
-                    if ($array_estudios != '') {
-                        if(!empty($array_estudios)){
-                            foreach ($array_estudios as $row) {
-                                //variables de los detalles
-                                $tipo = $row[0];
-                                $fecha = $row[1];
-                                $estudio = $row[2];
-                                $lugar = $row[3];
-                                
-                                $sql = "INSERT INTO `tercero_estudios` (`idtercero`, `fecha`, `estudio`, `lugar`, `tipo`, `status`) 
-                                VALUES ($idtercero, '$fecha', '$estudio', '$lugar', '$tipo', 1);";
-                                $result = $mysqli->query($sql);
-                              }
-                        }
-                    }
-                    
-                    //AGREGAR LAS OCUPACIONES
-                    if ($array_ocupacion != '') {
-                        if(!empty($array_ocupacion)){
-                            foreach ($array_ocupacion as $row) {
-                                //variables de las ocupaciones
-                                $tipo = $row[0];
-                                $ocupacion = $row[1];
-                                $fecha = $row[2];
-                                $fecha_fin = $row[3];
-                                
-                                $sql = "INSERT INTO `tercero_ocupaciones` (`idtercero`, `fecha`, `fecha_fin`, `ocupacion`, `tipo`) 
-                                VALUES ($idtercero, '$fecha', '$fecha_fin', '$ocupacion', '$tipo');";
-                                $result = $mysqli->query($sql);
-                              }
-                        }
-                    }
-                    
+            if ($mysqli->affected_rows > 0) {
+                //NO PASAR SI ES IGLESIA
+                if ($idtipo != 6) {
+                    //REGISTRAR MINISTRO EN tercero_ministerial
+                    $sql = "INSERT INTO `tercero_ministerial` (`idtercero`, `convercion`, `bautizmo_agua`, `bautizmo_ES`, 
+                    `iglesia`, `pastor`, `ministerio`) 
+                    VALUES ($idtercero, '$m_fecha_convercion', '$m_fecha_bautizmo_agua', '$m_fecha_bautizmo_es', 
+                    '$m_iglesia', '$m_pastor', '$m_ministerio');";
+                    $result = $mysqli->query($sql);
+                    if ($mysqli->affected_rows > 0) {
+                        //REGISTRAR ESCALAFON
+                        $sql = "INSERT INTO `tercero_escalafon` (`idtercero`, `idescalafon`, `fecha`, `status`) 
+                            VALUES ($idtercero, $m_idescalafon, NOW(), '1');";
+                        $result = $mysqli->query($sql);
+                        if ($mysqli->affected_rows > 0) {
+                            //AGREGAR LOS ESTUDIOS
+                            if ($array_estudios != '') {
+                                if (!empty($array_estudios)) {
+                                    foreach ($array_estudios as $row) {
+                                        //variables de los detalles
+                                        $tipo = $row[0];
+                                        $fecha = $row[1];
+                                        $estudio = $row[2];
+                                        $lugar = $row[3];
 
-                    $array['response'] = 'exito';
+                                        $sql = "INSERT INTO `tercero_estudios` (`idtercero`, `fecha`, `estudio`, `lugar`, `tipo`, `status`) 
+                                            VALUES ($idtercero, '$fecha', '$estudio', '$lugar', '$tipo', 1);";
+                                        $result = $mysqli->query($sql);
+                                    }
+                                }
+                            }
+
+                            //AGREGAR LAS OCUPACIONES
+                            if ($array_ocupacion != '') {
+                                if (!empty($array_ocupacion)) {
+                                    foreach ($array_ocupacion as $row) {
+                                        //variables de las ocupaciones
+                                        $tipo = $row[0];
+                                        $ocupacion = $row[1];
+                                        $fecha = $row[2];
+                                        $fecha_fin = $row[3];
+
+                                        $sql = "INSERT INTO `tercero_ocupaciones` (`idtercero`, `fecha`, `fecha_fin`, `ocupacion`, `tipo`) 
+                                            VALUES ($idtercero, '$fecha', '$fecha_fin', '$ocupacion', '$tipo');";
+                                        $result = $mysqli->query($sql);
+                                    }
+                                }
+                            }
+
+
+                            $array['response'] = 'exito';
+                        } else {
+                            $array['response'] = 'error_insert_tercero_escalafon';
+                        }
+                    } else {
+                        $array['response'] = 'error_insert_tercero_ministerial';
+                    }
                 }else {
-                    $array['response'] = 'error_insert_tercero_escalafon';
+                    //si es iglesia todo va bien
+                    $array['response'] = 'exito';
                 }
-            }else {
-                $array['response'] = 'error_insert_tercero_ministerial';
+            } else {
+                $array['response'] = 'error_insert_tercero_zonas';
             }
-          }else {
-            $array['response'] = 'error_insert_tercero_zonas';
-          }
-        }else {
+        } else {
             // $array['response'] = $sql;
             $array['response'] = 'error_insert_tercero';
         }
-    }else {
+    } else {
         $array['response'] = 'cedula_existe';
     }
-}elseif ($opt == 'add_estudio') {
+} elseif ($opt == 'add_estudio') {
     $sql = "INSERT INTO `tercero_estudios` (`idtercero`, `fecha`, `estudio`, `lugar`, `tipo`) 
     VALUES ($idtercero, '$fecha', '$estudio', '$lugar', '$tipo');";
     $result = $mysqli->query($sql);
-    if($mysqli->affected_rows > 0 ){
+    if ($mysqli->affected_rows > 0) {
         $array['response'] = 'exito';
         $array['idestudio'] = $mysqli->insert_id;
-    }else {
+    } else {
         $array['response'] = 'error_insert';
     }
-}elseif($opt == 'delete_estudio'){
-   $sql = "UPDATE `tercero_estudios` SET `status`='0' WHERE `idtercero_estudio`=$idestudio;";
-   $result = $mysqli->query($sql);
-    if($mysqli->affected_rows > 0 ){
+} elseif ($opt == 'delete_estudio') {
+    $sql = "UPDATE `tercero_estudios` SET `status`='0' WHERE `idtercero_estudio`=$idestudio;";
+    $result = $mysqli->query($sql);
+    if ($mysqli->affected_rows > 0) {
         $array['response'] = 'exito';
-    }else {
+    } else {
         $array['response'] = 'error_deleted';
     }
-}elseif($opt == 'add_ocupacion') {
+} elseif ($opt == 'add_ocupacion') {
     $sql = "INSERT INTO `tercero_ocupaciones` (`idtercero`, `fecha`, `fecha_fin`, `ocupacion`, `tipo`) 
     VALUES ($idtercero, '$fecha', '$fecha_fin', '$ocupacion', '$tipo');";
     $result = $mysqli->query($sql);
-    if($mysqli->affected_rows > 0 ){
+    if ($mysqli->affected_rows > 0) {
         $array['response'] = 'exito';
         $array['idocupacion'] = $mysqli->insert_id;
-    }else {
+    } else {
         $array['response'] = 'error_insert';
     }
-}elseif($opt == 'delete_ocupacion'){
+} elseif ($opt == 'delete_ocupacion') {
     $sql = "UPDATE `tercero_ocupaciones` SET `status`='0' WHERE `idtercero_ocupacion`=$idocupacion;";
     $result = $mysqli->query($sql);
-    if($mysqli->affected_rows > 0 ){
+    if ($mysqli->affected_rows > 0) {
         $array['response'] = 'exito';
-    }else {
+    } else {
         $array['response'] = 'error_deleted';
     }
-}elseif ($opt = 'edit_ministro') {
+} elseif ($opt = 'edit_ministro') {
     $tercero = get_tercero($idtercero);
     if ($tercero != 0) {
-        $cedula_full = $tipo_cedula.$cedula;
+        $cedula_full = $tipo_cedula . $cedula;
         //validar si la cedula a actualizar ya corresponde a otra persona
         $continuar = true;
         $sql_cedula_update = "";
         if ($cedula_full != $tercero['cedula']) {
             $sql_cedula = "SELECT * FROM tercero WHERE cedula='$cedula_full' AND idtercero != $idtercero";
             $result = $mysqli->query($sql_cedula);
-            if($mysqli->affected_rows > 0 ){
+            if ($mysqli->affected_rows > 0) {
                 $continuar = false;
-            }else {
+            } else {
                 $sql_cedula_update = "`cedula`='$cedula_full',";
             }
         }
@@ -198,11 +204,11 @@ if($opt == 'add_ministro'){
             //-->buscar si existe algunos datos para actualizar, sino insertar datos
             $sql_ministerial = "SELECT * FROM tercero_ministerial WHERE idtercero = $idtercero";
             $result_m = $mysqli->query($sql_ministerial);
-            if($mysqli->affected_rows > 0 ){//actualizar datos ministeriales
+            if ($mysqli->affected_rows > 0) { //actualizar datos ministeriales
                 $sql2 = "UPDATE `tercero_ministerial` SET `convercion`='$m_fecha_convercion', `bautizmo_agua`='$m_fecha_bautizmo_agua', `bautizmo_ES`='$m_fecha_bautizmo_es', 
                 `iglesia`='$m_iglesia', `pastor`='$m_pastor', `ministerio`='$m_ministerio' WHERE `idtercero`=$idtercero";
                 $result2 = $mysqli->query($sql2);
-            }else{//insertar datos ministeriales
+            } else { //insertar datos ministeriales
                 $sql2 = "INSERT INTO `tercero_ministerial` (`idtercero`, `convercion`, `bautizmo_agua`, `bautizmo_ES`, `iglesia`, `pastor`, `ministerio`) VALUES 
                 ($idtercero, '$m_fecha_convercion', '$m_fecha_bautizmo_agua', '$m_fecha_bautizmo_es', '$m_iglesia', '$m_pastor', '$m_ministerio');";
                 $result2 = $mysqli->query($sql2);
@@ -217,12 +223,12 @@ if($opt == 'add_ministro'){
                 WHERE z.idempresa = $idempresa_sesion AND z.status AND tz.status AND idtercero = $idtercero";
                 $result3 = $mysqli->query($sql_zonas);
                 if ($mysqli->affected_rows > 0) {
-                    while($row = $result3->fetch_array(MYSQLI_ASSOC)){
-                        $sql_update = "UPDATE `tercero_zonas` SET `status`='0' WHERE `idzona`=".$row['idzona']." AND `idtercero`= ".$row['idtercero'];
+                    while ($row = $result3->fetch_array(MYSQLI_ASSOC)) {
+                        $sql_update = "UPDATE `tercero_zonas` SET `status`='0' WHERE `idzona`=" . $row['idzona'] . " AND `idtercero`= " . $row['idtercero'];
                         $result_update = $mysqli->query($sql_update);
                     }
                     $insertar_zona = true;
-                }else {
+                } else {
                     $insertar_zona = true;
                 }
 
@@ -241,18 +247,15 @@ if($opt == 'add_ministro'){
                 $result_insert = $mysqli->query($sql_add_escalafon);
             }
             $array['response'] = 'exito';
-        }else {
+        } else {
             $array['response'] = 'cedula_asignada_a_otro_tercero';
         }
-    }else {
+    } else {
         $array['response'] = 'idtercero_no_encontrado';
     }
-
-    
 }
 
 
 $mysqli->close();
 echo json_encode($array);
 exit();
-?>

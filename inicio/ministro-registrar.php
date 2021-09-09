@@ -30,6 +30,14 @@ if ($escalafones != 0) {
         $html_escalafones .= '<option value="'.$row['idescalafon'].'">'.$row['escalafon'].'</option>';
     }
 }
+
+if ($sesion['zonal'] == 1) {
+    $iglesia_nombres = get_nombre_iglesias_por_zona($sesion['idobjeto']);
+}elseif ($sesion['distrital'] == 1) {
+    $iglesia_nombres = get_nombre_iglesias_por_distrito($sesion['idobjeto']);
+}else {
+    //NACIONAL
+}
 ?>
 
 <!DOCTYPE html>
@@ -58,6 +66,9 @@ if ($escalafones != 0) {
         <!-- Topbar header - style you can find in pages.scss -->
         <!-- ============================================================== -->
         <?php include_once('V/header.php') ?>
+
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <!-- ============================================================== -->
         <!-- End Topbar header -->
         <!-- ============================================================== -->
@@ -235,7 +246,7 @@ if ($escalafones != 0) {
                                     </div>
                                     <div class="form-group col-md-6 m-t-20">
                                         <label>Iglesia *</label>
-                                        <input type="text" name="m_iglesia" class="form-control form-control-line" required>
+                                        <input type="text" id="autocomplete" name="m_iglesia" class="form-control form-control-line" required>
                                     </div>
                                     <div class="form-group col-md-6 m-t-20">
                                         <label>Pastor</label>
@@ -414,7 +425,11 @@ if ($escalafones != 0) {
                 
                 
                 <script src="V/js/ministro-registrar.js"></script>
-                
+                <script>
+                    $( "#autocomplete" ).autocomplete({
+                            source: [ "<?=implode('","', $iglesia_nombres)?>" ]
+                        });
+                </script>
                 
                 <!-- ============================================================== -->
                 <!-- End Page Content -->

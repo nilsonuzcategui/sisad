@@ -22,9 +22,9 @@
                         
                         <li> <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-church"></i><span class="hide-menu">Iglesias</a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="#">Registrar Iglesia </a></li>
+                                <li><a href="iglesia-registrar.php">Registrar Iglesia </a></li>
                                 <li><a href="#">Editar Iglesia</a></li>
-                                <li><a href="#">Ver Iglesia</a></li>
+                                <li><a href="iglesia-ver.php">Ver Iglesia</a></li>
                             </ul>
                         </li>
                         
