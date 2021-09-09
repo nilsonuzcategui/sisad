@@ -33,7 +33,7 @@ foreach ($terceros as $row) {
         <td>
             <div style="display: flex;justify-content: center;"">
                 ' . $html_boton_correo . '
-                <a href="ministro-editar.php?id=' . encriptar($row['idtercero']) . '" class="btn btn-success btn-circle" style="color:white;" data-toggle="tooltip" data-placement="left" title="Editar Datos" data-original-title="Editar Datos"><i class="fa fa-pencil"></i> </a>
+                <a href="iglesia-editar.php?id=' . encriptar($row['idtercero']) . '" class="btn btn-success btn-circle" style="color:white;" data-toggle="tooltip" data-placement="left" title="Editar Datos" data-original-title="Editar Datos"><i class="fa fa-pencil"></i> </a>
             </div>
         </td>
     </tr>';
