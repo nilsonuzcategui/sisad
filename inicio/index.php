@@ -72,6 +72,11 @@ $sesion = $_SESSION['sisad'];
                         <div class="card">
                           
                             <div class="card-body">
+                            <div class="alert alert-info" role="alert">
+                                Este Inicio está en desarrollo y se irá adecuando conforme el sistema se desarrolle.
+                            </div>
+
+
                                 <div class="d-flex">
                                     <div>
                                         <h3 class="card-title m-b-5"><span class="lstick"></span>Sales Overview </h3>

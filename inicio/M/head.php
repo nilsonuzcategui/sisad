@@ -8,7 +8,7 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon.png">
     
-    <!-- Bootstrap Core CSS -->
+    <!-- Bootstrap Core CSS v4.0.0-beta -->
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="../assets/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
     <!-- This page CSS -->
