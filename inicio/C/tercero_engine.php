@@ -55,12 +55,20 @@ if ($opt == 'add_ministro') {
     //validar si el ministro existe
     $datos_aux = get_ministro_cedula($cedula_full);
     if ($datos_aux == 0) {
+        // validar fecha vacia
+        $fecha_nacimiento = ($fecha_nacimiento == '') ? "NOW()" : "'".$fecha_nacimiento."'" ;
+        $m_fecha_convercion = ($m_fecha_convercion == '') ? "NOW()" : "'".$m_fecha_convercion."'" ;
+        $m_fecha_bautizmo_agua = ($m_fecha_bautizmo_agua == '') ? "NOW()" : "'".$m_fecha_bautizmo_agua."'" ;
+        $m_fecha_bautizmo_es = ($m_fecha_bautizmo_es == '') ? "NOW()" : "'".$m_fecha_bautizmo_es."'" ;
+        $sexo = ($sexo == '') ? 'Masculino' : $sexo;
+        $estado_civil = ($estado_civil == '') ? 'Soltero(a)' : $estado_civil;
+
         //REGISTRAR MINISTRO EN tercero
         $sql = "INSERT INTO `tercero` (`idtipo_tercero`, `cedula`, `razon_social`, `apellidos`, `sexo`, 
         `estado_civil`, `lugar_nacimiento`, `fecha_nac`, `telefono`, 
         `fax`, `correo`, `web`, `direccion`, `descripcion`) 
         VALUES ($idtipo, '$cedula_full', '$nombres', '$apellidos', '$sexo', 
-        '$estado_civil', '$lugar_nacimiento', '$fecha_nacimiento', '$telefono', 
+        '$estado_civil', '$lugar_nacimiento', $fecha_nacimiento, '$telefono', 
         '$fax', '$correo', '$web', '$direccion', '$descripcion');";
         $result = $mysqli->query($sql);
         if ($mysqli->affected_rows > 0) {
@@ -74,7 +82,7 @@ if ($opt == 'add_ministro') {
                     //REGISTRAR MINISTRO EN tercero_ministerial
                     $sql = "INSERT INTO `tercero_ministerial` (`idtercero`, `convercion`, `bautizmo_agua`, `bautizmo_ES`, 
                     `iglesia`, `pastor`, `ministerio`) 
-                    VALUES ($idtercero, '$m_fecha_convercion', '$m_fecha_bautizmo_agua', '$m_fecha_bautizmo_es', 
+                    VALUES ($idtercero, $m_fecha_convercion, $m_fecha_bautizmo_agua, $m_fecha_bautizmo_es, 
                     '$m_iglesia', '$m_pastor', '$m_ministerio');";
                     $result = $mysqli->query($sql);
                     if ($mysqli->affected_rows > 0) {
@@ -133,7 +141,7 @@ if ($opt == 'add_ministro') {
                 $array['response'] = 'error_insert_tercero_zonas';
             }
         } else {
-            // $array['response'] = $sql;
+            $array['html'] = $sql;
             $array['response'] = 'error_insert_tercero';
         }
     } else {
