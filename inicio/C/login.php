@@ -15,7 +15,7 @@ LEFT JOIN tercero t ON ud.idtercero=t.idtercero
 LEFT JOIN portal_foto pf ON ud.idtercero=pf.idtercero 
 WHERE ud.user='$usuario' AND ud.pass='$clave' AND ud.status LIMIT 1";
 $result = $mysqli->query($sql);
-if($mysqli->affected_rows > 0 ){
+if ($mysqli->affected_rows > 0) {
     $datos = $result->fetch_array(MYSQLI_ASSOC);
     $idtercero = $datos['idtercero'];
     $idobjeto = $datos['idobjeto'];
@@ -30,31 +30,25 @@ if($mysqli->affected_rows > 0 ){
                 FROM licencias l WHERE idempresa = $idconcilio AND l.status";
             }
             if ($datos['distrital']) {
-                $sql2 = "SELECT l.fin, l.status, l.idempresa, l.is_limite 
-                FROM licencias l WHERE idempresa = $idobjeto AND l.status";
+                $sql2 = "SELECT * FROM licencias_sisad l WHERE idempresa = $idobjeto AND l.status";
             }
             if ($datos['zonal']) {
-                $sql2 = "SELECT l.fin, l.status, l.idempresa, l.is_limite
+                $sql2 = "SELECT l.*
                 FROM zonas z
-                LEFT JOIN licencias l ON l.idempresa=z.idempresa
+                LEFT JOIN licencias_sisad l ON l.idempresa=z.idempresa
                 WHERE z.idzona = $idobjeto AND l.status";
             }
             $result = $mysqli->query($sql2);
-            if($mysqli->affected_rows > 0 ){
+            if ($mysqli->affected_rows > 0) {
                 $licencia_datos = $result->fetch_array(MYSQLI_ASSOC);
-                //validar tipo licencia
-                if($licencia_datos['is_limite'] == 0){
+                //validar fecha de vencimiento de la licencia
+                $hoy = date('Y-m-d', time());
+                if ($hoy <= $licencia_datos['fin']) {
                     $is_login = true;
-                }else{
-                    //validar fecha de vencimiento de la licencia
-                    $hoy = date('Y-m-d', time());
-                    if($hoy <= $licencia_datos['fin']){
-                        $is_login = true;
-                    }else{
-                        $response = 'vencido';
-                    }
+                } else {
+                    $response = 'vencido';
                 }
-            }else {
+            } else {
                 $response = 'no_se_encontro_liciencia';
             }
         } else {
@@ -70,10 +64,9 @@ if($mysqli->affected_rows > 0 ){
     } else {
         $response = 'no_secretario';
     }
-}else {
+} else {
     $response = 'no_existe_usuario';
 }
 
 $mysqli->close();
 echo json_encode($response);
-?>
