@@ -3,6 +3,7 @@ session_start();
 include_once('M/funciones.php');
 $sesion = $_SESSION['sisad'];
 
+// Subiendo por Deploy
 
 //OBTENER VARIABLE DE LA GET
 $idtercero_get = (isset($_GET['id'])) ? desencriptar($_GET['id']) : '' ;
