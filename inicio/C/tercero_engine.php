@@ -56,10 +56,10 @@ if ($opt == 'add_ministro') {
     $datos_aux = get_ministro_cedula($cedula_full);
     if ($datos_aux == 0) {
         // validar fecha vacia
-        $fecha_nacimiento = ($fecha_nacimiento == '') ? "NOW()" : "'".$fecha_nacimiento."'" ;
-        $m_fecha_convercion = ($m_fecha_convercion == '') ? "NOW()" : "'".$m_fecha_convercion."'" ;
-        $m_fecha_bautizmo_agua = ($m_fecha_bautizmo_agua == '') ? "NOW()" : "'".$m_fecha_bautizmo_agua."'" ;
-        $m_fecha_bautizmo_es = ($m_fecha_bautizmo_es == '') ? "NOW()" : "'".$m_fecha_bautizmo_es."'" ;
+        $fecha_nacimiento = ($fecha_nacimiento == '') ? "NOW()" : "'" . $fecha_nacimiento . "'";
+        $m_fecha_convercion = ($m_fecha_convercion == '') ? "NOW()" : "'" . $m_fecha_convercion . "'";
+        $m_fecha_bautizmo_agua = ($m_fecha_bautizmo_agua == '') ? "NOW()" : "'" . $m_fecha_bautizmo_agua . "'";
+        $m_fecha_bautizmo_es = ($m_fecha_bautizmo_es == '') ? "NOW()" : "'" . $m_fecha_bautizmo_es . "'";
         $sexo = ($sexo == '') ? 'Masculino' : $sexo;
         $estado_civil = ($estado_civil == '') ? 'Soltero(a)' : $estado_civil;
 
@@ -133,7 +133,7 @@ if ($opt == 'add_ministro') {
                     } else {
                         $array['response'] = 'error_insert_tercero_ministerial';
                     }
-                }else {
+                } else {
                     //si es iglesia todo va bien
                     $array['response'] = 'exito';
                 }
@@ -202,9 +202,17 @@ if ($opt == 'add_ministro') {
 
 
         if ($continuar) {
+            // validar fecha vacia
+            $fecha_nacimiento = ($fecha_nacimiento == '') ? "NOW()" : "'" . $fecha_nacimiento . "'";
+            $m_fecha_convercion = ($m_fecha_convercion == '') ? "NOW()" : "'" . $m_fecha_convercion . "'";
+            $m_fecha_bautizmo_agua = ($m_fecha_bautizmo_agua == '') ? "NOW()" : "'" . $m_fecha_bautizmo_agua . "'";
+            $m_fecha_bautizmo_es = ($m_fecha_bautizmo_es == '') ? "NOW()" : "'" . $m_fecha_bautizmo_es . "'";
+            $sexo = ($sexo == '') ? 'Masculino' : $sexo;
+            $estado_civil = ($estado_civil == '') ? 'Soltero(a)' : $estado_civil;
+
             //ACTUALIZAR EN TABLA -> TERCERO
             $sql = "UPDATE `tercero` SET `idtipo_tercero`=$idtipo, $sql_cedula_update `razon_social`='$nombres', `apellidos`='$apellidos', 
-            `sexo`='$sexo', `estado_civil`='$estado_civil', `lugar_nacimiento`='$lugar_nacimiento', `fecha_nac`='$fecha_nacimiento', `telefono`='$telefono', `fax`='$fax', 
+            `sexo`='$sexo', `estado_civil`='$estado_civil', `lugar_nacimiento`='$lugar_nacimiento', `fecha_nac`=$fecha_nacimiento, `telefono`='$telefono', `fax`='$fax', 
             `correo`='$correo', `web`='$web', `direccion`='$direccion', `descripcion`='$descripcion' WHERE `idtercero`='$idtercero';";
             $result = $mysqli->query($sql);
 
@@ -213,14 +221,16 @@ if ($opt == 'add_ministro') {
             $sql_ministerial = "SELECT * FROM tercero_ministerial WHERE idtercero = $idtercero";
             $result_m = $mysqli->query($sql_ministerial);
             if ($mysqli->affected_rows > 0) { //actualizar datos ministeriales
-                $sql2 = "UPDATE `tercero_ministerial` SET `convercion`='$m_fecha_convercion', `bautizmo_agua`='$m_fecha_bautizmo_agua', `bautizmo_ES`='$m_fecha_bautizmo_es', 
+                $sql2 = "UPDATE `tercero_ministerial` SET `convercion`=$m_fecha_convercion, `bautizmo_agua`=$m_fecha_bautizmo_agua, `bautizmo_ES`=$m_fecha_bautizmo_es, 
                 `iglesia`='$m_iglesia', `pastor`='$m_pastor', `ministerio`='$m_ministerio' WHERE `idtercero`=$idtercero";
                 $result2 = $mysqli->query($sql2);
             } else { //insertar datos ministeriales
                 $sql2 = "INSERT INTO `tercero_ministerial` (`idtercero`, `convercion`, `bautizmo_agua`, `bautizmo_ES`, `iglesia`, `pastor`, `ministerio`) VALUES 
-                ($idtercero, '$m_fecha_convercion', '$m_fecha_bautizmo_agua', '$m_fecha_bautizmo_es', '$m_iglesia', '$m_pastor', '$m_ministerio');";
+                ($idtercero, $m_fecha_convercion, $m_fecha_bautizmo_agua, $m_fecha_bautizmo_es, '$m_iglesia', '$m_pastor', '$m_ministerio');";
                 $result2 = $mysqli->query($sql2);
             }
+
+            $array['sql-ministro'] = $sql2;
 
             //CAMBIAR ZONA SI FUE EL CASO
             if ($idzona != $tercero['idzona'] && $idempresa_sesion != '') {
