@@ -8,7 +8,7 @@ $clave = (isset($_POST['clave'])) ? limpiar($_POST['clave']) : '';
 
 $sql = "SELECT ud.iduser, ud.iduser_root, ud.idtercero, ud.user, ud.secretaria,
 sp.nacional, sp.distrital, sp.zonal, sp.idobjeto,
-t.razon_social, t.apellidos, t.correo, pf.ruta AS foto
+t.razon_social, t.apellidos, t.correo, pf.ruta AS foto, ud.idtercero
 FROM user_data ud
 LEFT JOIN sisad_permisos sp ON ud.iduser=sp.iduser
 LEFT JOIN tercero t ON ud.idtercero=t.idtercero
@@ -58,6 +58,11 @@ if ($mysqli->affected_rows > 0) {
         //almacenar en cache
         if ($is_login) {
             session_start();
+            
+            // Buscar su empresa
+            $empresas = get_empresa_del_tercero($datos['idtercero']);
+            $datos += ['idempresa' => $empresas];
+
             $_SESSION['sisad'] = $datos;
             $response = 'exito';
         }

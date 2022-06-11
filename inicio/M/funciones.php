@@ -213,6 +213,25 @@ function get_terceros_por_zona($idzona){
   return $return;
 }
 
+function get_empresa_del_tercero($idtercero)
+{
+    $mysqli = on_bd();
+    $sql = "SELECT z.idempresa
+    FROM tercero t
+    LEFT JOIN tercero_zonas tz ON t.idtercero=tz.idtercero
+    LEFT JOIN zonas z ON tz.idzona=z.idzona
+    WHERE t.idtercero = $idtercero";
+    $result = $mysqli->query($sql);
+    if ($mysqli->affected_rows > 0) {
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $return = $row['idempresa'];
+    } else {
+        $return = '';
+    }
+    off_bd($mysqli);
+    return $return;
+}
+
 function get_terceros_por_distrito($idempresa){
   $mysqli = on_bd();
   $array = array();
@@ -771,7 +790,7 @@ function validateDate($date, $format = 'Y-m-d'){
 
 
 //FUNCIONES PARA ENVIOS DE CORREOS
-function email_editar_ministro($idtercero){
+function email_editar_ministro($idtercero, $idempresa){
   $mysqli = on_bd();
   $tercero = get_tercero($idtercero);
 
@@ -780,9 +799,17 @@ function email_editar_ministro($idtercero){
   $para = $tercero['correo'];
   $titulo = 'S.I.S.A.D - Actualizacion de datos';
 
-
-  $nombre_empresa = 'Superintedencia del Distrito Falcon';
-  $responder_en = 'distritofalcon2013@gmail.com';
+  // emisor dependiendo al idempresa
+  if ($idempresa == 1) { // FALCON
+    $nombre_empresa = 'Superintedencia del Distrito Falcon';
+    $responder_en = 'distritofalcon2013@gmail.com';
+  }else if ($idempresa == 4) { // ZULIA
+    $nombre_empresa = 'Superintedencia del Distrito Zulia';
+    $responder_en = 'secretariafinanzasdttozulia@gmail.com';
+  }else if ($idempresa == 17) { // ZULIA
+    $nombre_empresa = 'Superintedencia del Distrito Andino';
+    $responder_en = 'finanzasdttoandino@gmail.com';
+  }
 
   $cabeceras = 'MIME-Version: 1.0' . "\r\n";
   $cabeceras .= 'Content-type: text/html; charset=utf-8' . "\r\n";
